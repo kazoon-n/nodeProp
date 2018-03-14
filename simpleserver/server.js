@@ -27,10 +27,22 @@ http.createServer(function(req, res){
         return;
     }
 
-if(){
+    if(stats.isFile){
+        var mimeType = mimeTypes[path.extname(filename).split(".").reverse()[0]];
+        res.writeHead(200, {'Content-type': mimeType});
 
-    
-}
+        var fileStream = fs.createReadStream(filename);
+        fileStream.pipe(res);
+    } else if(stats.isDirectory()){
+        res.writeHead(302, {
+            'location': 'index.html'
+        });
+        res.end();
+    }else{
+        res.writeHead(500, {'Content-type': 'text/plain'});
+        res.write('500 Internal Error\n');
+        res.end();
+    }
 
 
-});
+}).listen(1337);
